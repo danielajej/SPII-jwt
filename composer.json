@@ -1,0 +1,7 @@
+{
+    "name": "rodrigo/sistemas-propietariosii",
+    "type": "proyect",
+    "require": {
+        "firebase/php-jwt": "^5.4"
+    }
+}
