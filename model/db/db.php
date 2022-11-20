@@ -8,28 +8,28 @@ class db{//Declaramos la clase en php
     static $username ="root";
     static $password ="";
 
-    public static function connect(){ //creamos un metodo estatico y le agregamos un nombre 
+    public static function connect(){ 
         return new mysqli(
             self::$host,
             self::$username,
             self::$password, 
             self::$dbname
-        );//CONEXION A LA BASE DE DATOS MEDIANTE EL METODO
+        );
     }
     public static function query($query){
-        $results = []; //Arreglo donde se guarda
+        $results = []; 
         $db = self::connect();
         $result = $db->query($query);
         
         if (!is_bool($result)){
-            while($row = $result->fetch_object()){ //recorrido a result, SI LA VARIABLE ROW ES IGIUAL AL RESULT EJECUTA EL QUERY , Y EXTRAME COMO OBJETOS LA CONSULTA.
-                $results[] = $row;//CONSULTO
+            while($row = $result->fetch_object()){ 
+                $results[] = $row;
             }
-            return $results;//RETORNO
+            return $results;
         }else{
             return $result;
         }
-        $db->close();//CIERRO 
+        $db->close(); 
 
     }
     public static function insertGen($response){
@@ -75,14 +75,12 @@ class db{//Declaramos la clase en php
         $values = array_values($response);
     
         $set = '';
-        //eliminamos pares donde el value es ''
         foreach($values as $index => $value){
            if (empty($value)){
                unset($values[$index]);
                unset($keys[$index]);
            }
         }
-        //reordenamos los array 
         $values = array_values($values);
         $keys = array_values($keys);
 

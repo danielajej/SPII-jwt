@@ -36,12 +36,22 @@
             $sql = "SELECT * FROM tblperfil;";
             $rolResult = db::query($sql);
             $rolIds = [];
+            echo json_encode($rolList);
+            echo json_encode($rolResult);
+
             foreach($rolResult as $rolRow){
-                foreach($rolList as $rol){
-                    if($rol == $rolRow->nombre){
+                if(count($rolList)>1){
+                    foreach($rolList as $rol){
+                        if($rol == $rolRow->nombre){
+                            $rolIds[] = $rolRow->id;
+                        }
+                    }
+                }else{
+                    if($rolRow->nombre == $rolList){
                         $rolIds[] = $rolRow->id;
                     }
                 }
+                
             }
             //obtenemos el id del usuario recién registrado
             $sql = "SELECT id FROM tblusuario WHERE email = '$requestData->email';";
@@ -94,18 +104,16 @@
                     $modulos[]=$row->modulo;
                     $modulosUrls[]=$row->url;
                 }
-                //eliminamos los valores repetidos y reindexamos
                 $perfiles = array_values(array_unique($perfiles));
                 $modulos = array_values(array_unique($modulos));
                 $modulosUrls = array_values(array_unique($modulosUrls));
-                //guardamos la información 
+                
                 $tokenData['id'] = $id;
                 $tokenData['usuario'] = $result[0]->usuario;
                 $tokenData['email'] = $result[0]->email;
                 $tokenData['perfiles'] = $perfiles;
                 $tokenData['modulos'] = $modulos;
                 $tokenData['modulosUrls'] = $modulosUrls;
-                //creamos el token
                 $_token = Auth::SignIn($tokenData);
                 $response['login'] = true;
                 $response['token'] = $_token;
@@ -124,11 +132,9 @@
         $headers = apache_request_headers();
         $_token = $headers['authorization'];
         try{
-            //truena si el token no es válido
             Auth::Check($_token);
             $data_token = (Auth::GetData($_token));
             $data_token->success = true;
-            //devolvemos la info decodificada
             echo json_encode($data_token);
         }
         catch(Exception $e){
